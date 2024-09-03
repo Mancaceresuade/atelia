@@ -1,1 +1,3 @@
 # atelia
+
+mvn clean install
