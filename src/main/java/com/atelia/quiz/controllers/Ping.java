@@ -1,6 +1,5 @@
 package com.atelia.quiz.controllers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.springframework.http.HttpStatus;
@@ -15,16 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class Ping {
 
-    ArrayList<Pregunta> preguntas = new ArrayList<>();
+    HashMap<Integer,Pregunta> preguntas = new HashMap<>();    
     HashMap<Integer,Jugada> jugadas = new HashMap<>();    
 
     @GetMapping("/ping")
     public String pingPong() {
         return "pong";
     }
-
-    @GetMapping("/preguntas")
-    public ResponseEntity<ArrayList<Pregunta>> getPreguntas() {
+    public Ping() {
         Pregunta pregunta1 = new Pregunta();
         pregunta1.setId(1);
         pregunta1.setPregunta("¿Cual de los siguientes es un tipo de dato primitivo en java ?");
@@ -34,7 +31,7 @@ public class Ping {
         respuesta1.put(3, "Integer");
         respuesta1.put(4, "Test");
         pregunta1.setRespuestas(respuesta1);
-        preguntas.add(pregunta1);
+        preguntas.put(1,pregunta1);
         Pregunta pregunta2 = new Pregunta();
         pregunta2.setId(2);
         pregunta2.setPregunta("¿Que se utiliza para declarar un arreglo unidimensional en java ?");
@@ -44,21 +41,30 @@ public class Ping {
         respuesta21.put(3, "Integer[]");
         respuesta21.put(4, "Test");
         pregunta2.setRespuestas(respuesta21);
-        preguntas.add(pregunta2);
+        preguntas.put(2,pregunta2);
+    }    
+    @GetMapping("/preguntas")
+    public ResponseEntity<HashMap<Integer,Pregunta>> getPreguntas() {
         return new ResponseEntity<>(preguntas, HttpStatus.OK);
+    }
+
+    @GetMapping("/pregunta")
+    public ResponseEntity<Pregunta> getPregunta(@RequestParam("pregunta") Integer pregunta) {
+        return new ResponseEntity<>(this.preguntas.get(pregunta), HttpStatus.OK);
     }
 
 
     @GetMapping("/jugar")
-    public boolean jugar(@RequestParam("jugador") String jugador) {
-                
-        return false;
+    public boolean jugar(@RequestParam("jugador") Integer jugador, 
+                         @RequestParam("pregunta") Integer pregunta, 
+                         @RequestParam("respuesta") Integer respuesta) {
+        jugadas.put(pregunta, new Jugada(jugador,pregunta,respuesta));
+        return true;
     }
 
     @GetMapping("/resultados")
-    public ArrayList<Puntaje> resultados() {
-        ArrayList<Puntaje> puntajes = new ArrayList<>();
-        return puntajes;
+    public ResponseEntity<HashMap<Integer,Jugada>> resultados() {
+        return new ResponseEntity<>(jugadas, HttpStatus.OK);
     }
-
+    
 }

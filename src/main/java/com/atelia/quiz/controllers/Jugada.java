@@ -8,7 +8,15 @@ public class Jugada {
     private int jugador;
     private int pregunta;
     private int respuesta;
+
+
+    public Jugada(int jugador, int pregunta, int respuesta) {
+        this.jugador = jugador;
+        this.pregunta = pregunta;
+        this.respuesta = respuesta;
+    }
     
+
     public int getJugador() {
         return jugador;
     }
